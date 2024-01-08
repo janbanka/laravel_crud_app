@@ -18,7 +18,3 @@ use App\Http\Controllers\PeopleController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('janbanka/310216/people', [PeopleController::class, 'index']);
-Route::get('janbanka/310216/people/{person}', [PeopleController::class, 'show']);
-Route::delete('janbanka/310216/people/{id}', [PeopleController::class, '@destroy']);
