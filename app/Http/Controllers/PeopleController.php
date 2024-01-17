@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\People;
-use Illuminate\Support\Facades\Validator;
 
 class PeopleController extends Controller
 {
@@ -29,41 +28,17 @@ class PeopleController extends Controller
      */
     public function store(Request $request)
     {
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'lastName' => 'required|string',
-            'phoneNumber' => 'required|min_digits:9',
-            'street' => 'required|string',
-            'country' => 'required|string',
-            'city' => 'required|string'
-        ]);
-
-        if ($validator->fails()) {
+        $person = People::create($request->all());
+        if ($person) {
             return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages()
-            ], 422);
+                'status' => 201,
+                'message' => 'Person created successfully'
+            ], 201);
         } else {
-            $person = People::create([
-                'name' => $request->name,
-                'lastName' => $request->lastName,
-                'phoneNumber' => $request->phoneNumber,
-                'street' => $request->street,
-                'country' => $request->country,
-                'city' => $request->city
-            ]);
-            if ($person) {
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Person created successfully'
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 500,
-                    'message' => 'Something failed...'
-                ], 500);
-            }
+            return response()->json([
+                'status' => 500,
+                'message' => 'Request failed'
+            ], 500);
         }
     }
 
@@ -87,41 +62,17 @@ class PeopleController extends Controller
      */
     public function update(Request $request, People $person)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'string',
-            'lastName' => 'string',
-            'phoneNumber' => 'min_digits:9',
-            'street' => 'string',
-            'country' => 'string',
-            'city' => 'string'
-        ]);
-
-        if ($validator->fails()) {
+        if ($person) {
+            $person->update($request->all());
             return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages()
-            ], 422);
+                'status' => 200,
+                 'message' => 'Person updated successfully'
+             ], 200);
         } else {
-            if ($person) {
-                $person->update([
-                    'name' => $request->name,
-                    'lastName' => $request->lastName,
-                    'phoneNumber' => $request->phoneNumber,
-                    'street' => $request->street,
-                    'country' => $request->country,
-                    'city' => $request->city
-                ]);
-
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Person updated successfully'
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 500,
-                    'message' => 'Something failed...'
-                ], 500);
-            }
+             return response()->json([
+                'status' => 500,
+                'message' => 'Request failed'
+            ], 500);
         }
     }
 
@@ -139,7 +90,7 @@ class PeopleController extends Controller
         } else {
             return response()->json([
                 'status' => 404,
-                'message' => 'Person was not found'
+                'message' => 'Person does not exist'
             ], 404);
         }
     }
